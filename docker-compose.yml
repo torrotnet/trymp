@@ -1,0 +1,35 @@
+rendering_api:
+  restart: always
+  build: ./rendering_api
+  expose:
+    - "8000"
+  volumes:
+    - /usr/src/app/static
+    - ./shared/logs:/usr/src/logs
+  env_file: .env
+  links:
+    - mongodb
+  command: bash -c "cd /usr/src && APP_SETTING=.env python -m app.manage runserver >> /usr/src/logs/rendering_api.log 2>&1"
+
+nginx:
+  restart: always
+  build: ./nginx/
+  ports:
+    - "80:80"
+  volumes:
+    - /www/static
+    - ./shared/logs/nginx:/var/log/nginx/
+  volumes_from:
+    - rendering_api
+  links:
+    - rendering_api:rendering_api
+
+mongodb:
+  image: mongo:latest
+  restart: always
+  container_name: "mongodb"
+  volumes:
+    - ./mongod:/etc/mongod/
+    - ./shared/logs:/var/log/mongodb/
+    - ./shared/db:/data/db
+  command: mongod --config /etc/mongod/mongod.conf

@@ -1,0 +1,15 @@
+sanic
+motor
+
+python-json-logger
+sanic_cors
+aiohttp
+marshmallow
+python-dateutil
+uvloop
+bson
+motor
+pymongo
+sanic-swagger
+simplejson
+ujson

@@ -1,0 +1,23 @@
+server {
+
+    listen 80;
+    server_name example.org;
+    error_log  /var/log/nginx/error.log debug;
+    charset utf-8;
+
+    location /static {
+        alias /usr/src/app/static/;
+    }
+
+    location / {
+        proxy_pass http://rendering_api:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    location = /favicon.ico {
+      return 204;
+      access_log     off;
+      log_not_found  off;
+    }
+}
